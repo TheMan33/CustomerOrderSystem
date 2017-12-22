@@ -200,6 +200,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         jScrollPane4 = new javax.swing.JScrollPane();
         commentsText = new javax.swing.JTextArea();
         submitButton = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -358,7 +359,14 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         commentsText.setRows(5);
         jScrollPane4.setViewportView(commentsText);
 
-        submitButton.setText("Submit");
+        submitButton.setText("Save");
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitButtonActionPerformed(evt);
+            }
+        });
+
+        printButton.setText("Print");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -401,7 +409,9 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(122, 122, 122)
                 .addComponent(submitButton)
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(printButton)
+                .addContainerGap(141, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,7 +443,9 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(submitButton)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(submitButton)
+                    .addComponent(printButton))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -445,13 +457,17 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_submitButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -489,6 +505,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
     private javax.swing.JCheckBox orderedYesCheckbox;
     private javax.swing.JCheckBox paidNoCheckbox;
     private javax.swing.JCheckBox paidYesCheckbox;
+    private javax.swing.JButton printButton;
     private javax.swing.JTextField quantity;
     private javax.swing.JButton submitButton;
     private javax.swing.JTextField teamMemberText;

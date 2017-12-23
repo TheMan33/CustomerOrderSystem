@@ -21,6 +21,7 @@ public class Order {
     private String comments;
     private ArrayList<Item> orderItems;
     private String date;
+    private int orderID;
     
     public Order(String name, String number, boolean paid, boolean ordered, String orderNo, String staff, String comments, ArrayList<Item> items, String date){
         this.name = name;
@@ -32,6 +33,19 @@ public class Order {
         this.comments = comments;
         this.orderItems = items;
         this.date = date;
+    }
+    
+    public Order(String name, String number, boolean paid, boolean ordered, String orderNo, String staff, String comments, ArrayList<Item> items, String date, int orderID){
+        this.name = name;
+        this.number = number;
+        this.paid = paid;
+        this.ordered = ordered;
+        this.orderNo = orderNo;
+        this.staff = staff;
+        this.comments = comments;
+        this.orderItems = items;
+        this.date = date;
+        this.orderID = orderID;
     }
 
     public String getName() {
@@ -69,4 +83,32 @@ public class Order {
     public String getDate(){
         return date;
     }
+    
+    public int getOrderID(){
+        return orderID;
+    }
+
+    @Override
+    public String toString() {
+        String paidString;
+        String orderedString;
+        
+        if(paid){
+            paidString = "Yes";
+        }
+        else{
+            paidString = "No";
+        }
+        
+        if(ordered){
+            orderedString = "Yes";
+        }
+        else{
+            orderedString = "No";
+        }
+        
+        return orderID + " " + date + " " + name + " " + number + " Paid: " + paidString + " Ordered: " + orderedString + " " + orderNo;
+    }
+    
+    
 }

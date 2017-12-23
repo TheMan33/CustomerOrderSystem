@@ -111,6 +111,10 @@ public class Database {
                 Item item = new Item(rs.getString(2), rs.getString(id), rs.getInt(id));
                 items.add(item);
             }
+            
+            st = con.prepareStatement("SELECT * FROM orders WHERE orderN0 = ?");
+            st.setInt(1, id);
+            rs = st.executeQuery();
 
             retrieved = new Order(rs.getString("name"), rs.getString("number"), rs.getBoolean("paid"), rs.getBoolean("ordered"), rs.getString("orderNo"), rs.getString("staff"), rs.getString("comments"), items, rs.getString("date"));
         } catch (ClassNotFoundException ex) {
@@ -143,7 +147,7 @@ public class Database {
             
             Class.forName(driver).newInstance();
             Connection con = DriverManager.getConnection(dbURL);
-            PreparedStatement st = con.prepareStatement("DROP TABLE orders");
+            PreparedStatement st = con.prepareStatement("DROP TABLE *");
             int rs = st.executeUpdate();
             System.out.println("Table orders dropped");
         } catch (ClassNotFoundException ex) {
@@ -155,6 +159,77 @@ public class Database {
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+    }
+    
+    public ArrayList<Order> retrieveAllOrders(){
+        ArrayList<Order> orders = null;
+        String dbName = "OrderDB";
+        String dbUser = "ws";
+        String dbPass = "stationery";
+
+        String dbURL = "jdbc:derby://localhost:1527/" + dbName + ";"
+                + "create=true;"
+                + "user=" + dbUser + ";"
+                + "password=" + dbPass;
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";
+
+        try {
+            Class.forName(driver).newInstance();
+            Connection con = DriverManager.getConnection(dbURL);
+
+            PreparedStatement st = con.prepareStatement("SELECT * FROM orders");
+            ResultSet rs = st.executeQuery();
+
+            orders = new ArrayList<Order>();
+
+            while (rs.next()) {
+                Order order = new Order(rs.getString("name"), rs.getString("number"), rs.getBoolean("paid"), rs.getBoolean("ordered"), rs.getString("orderNo"), rs.getString("staff"), rs.getString("comments"), new ArrayList<Item>(), rs.getString("date"), rs.getInt("orderID"));
+                orders.add(order);
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+    
+    public void removeOrderByID(int id){
+        String dbName = "OrderDB";
+        String dbUser = "ws";
+        String dbPass = "stationery";
+
+        String dbURL = "jdbc:derby://localhost:1527/" + dbName + ";"
+                + "create=true;"
+                + "user=" + dbUser + ";"
+                + "password=" + dbPass;
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";
+
+        try {
+            Class.forName(driver).newInstance();
+            Connection con = DriverManager.getConnection(dbURL);
+
+            PreparedStatement st = con.prepareStatement("DELETE FROM orders WHERE orderID = ?");
+            st.setInt(1, id);
+            int rs = st.executeUpdate();
+            
+            st = con.prepareStatement("DELETE FROM items WHERE orderID = ?");
+            st.setInt(1, id);
+            rs = st.executeUpdate();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

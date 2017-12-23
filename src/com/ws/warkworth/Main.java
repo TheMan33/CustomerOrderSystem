@@ -23,7 +23,6 @@ import org.apache.derby.drda.NetworkServerControl;
 public class Main {
 
     public static void main(String[] args) {
-        
 
         try {
             NetworkServerControl server = new NetworkServerControl();
@@ -33,7 +32,7 @@ public class Main {
             e.printStackTrace();
             System.out.println("Unable to start DB. Please close the program and try again.");
         }
-        
+
 //        Database dbv = new Database();
 //        dbv.dropTable();
 
@@ -55,6 +54,7 @@ public class Main {
             DatabaseMetaData md = con.getMetaData();
             ResultSet rs = md.getTables(null, null, "ORDERS", null);
             if (!rs.next()) {
+                System.out.println("Adding orders table!");
                 PreparedStatement ps = con.prepareStatement("CREATE TABLE orders "
                         + "(name VARCHAR(30),"
                         + "number VARCHAR(12),"
@@ -68,12 +68,19 @@ public class Main {
                         + "PRIMARY KEY(orderID))");
                 int execute = ps.executeUpdate();
             }
-            
-            md = con.getMetaData();
-            rs = md.getTables(null, null, "ITEMS", null);
-            if(!rs.next()){
+        } catch (Exception e) {
+
+        }
+        
+        try {
+            Class.forName(driver).newInstance();
+            Connection con = DriverManager.getConnection(dbURL);
+            DatabaseMetaData md = con.getMetaData();
+            ResultSet rs = md.getTables(null, null, "ITEMS", null);
+            if (!rs.next()) {
+                System.out.println("Adding items table!");
                 PreparedStatement ps = con.prepareStatement("CREATE TABLE items "
-                        + "orderID int,"
+                        + "(orderID int,"
                         + "barcode VARCHAR (15),"
                         + "description VARCHAR (512),"
                         + "quantity int,"
@@ -81,7 +88,7 @@ public class Main {
                 int execute = ps.executeUpdate();
             }
         } catch (Exception e) {
-               
+
         }
 
         JFrame frame = new JFrame();

@@ -27,11 +27,26 @@ public class IntroGui extends javax.swing.JPanel {
                 orderButtonClicked();
             }
         });
+        
+        viewButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewButtonClicked();
+            }
+        });
     }
 
     public void orderButtonClicked(){
         frame.remove(this);
         frame.add(new NewOrderGui());
+        frame.revalidate();
+        frame.repaint();
+        frame.pack();
+    }
+    
+    public void viewButtonClicked(){
+        frame.remove(this);
+        frame.add(new ViewOrderGui());
         frame.revalidate();
         frame.repaint();
         frame.pack();

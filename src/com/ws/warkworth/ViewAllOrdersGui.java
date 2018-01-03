@@ -15,7 +15,7 @@ import javax.swing.JList;
  *
  * @author Ethan
  */
-public class ViewOrderGui extends javax.swing.JPanel {
+public class ViewAllOrdersGui extends javax.swing.JPanel {
 
     private Database db;
     private ArrayList<Order> allOrders;
@@ -24,7 +24,7 @@ public class ViewOrderGui extends javax.swing.JPanel {
     /**
      * Creates new form ViewOrderGui
      */
-    public ViewOrderGui() {
+    public ViewAllOrdersGui() {
         initComponents();
         
         editButton.addActionListener(new ActionListener() {

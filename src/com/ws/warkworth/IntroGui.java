@@ -46,7 +46,7 @@ public class IntroGui extends javax.swing.JPanel {
     
     public void viewButtonClicked(){
         frame.remove(this);
-        frame.add(new ViewOrderGui());
+        frame.add(new ViewAllOrdersGui());
         frame.revalidate();
         frame.repaint();
         frame.pack();

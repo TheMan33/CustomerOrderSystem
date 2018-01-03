@@ -147,7 +147,7 @@ public class Database {
             
             Class.forName(driver).newInstance();
             Connection con = DriverManager.getConnection(dbURL);
-            PreparedStatement st = con.prepareStatement("DROP TABLE *");
+            PreparedStatement st = con.prepareStatement("DROP TABLE orders");
             int rs = st.executeUpdate();
             System.out.println("Table orders dropped");
         } catch (ClassNotFoundException ex) {

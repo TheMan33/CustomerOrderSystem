@@ -41,7 +41,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         initComponents();
         db = new Database();
         
-        dateLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("d-M-u")));
+        dateLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-u")));
         
         items = new ArrayList<Item>();
         listModel = new DefaultListModel<String>();

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -20,47 +21,47 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     private Database db;
     private ArrayList<Order> allOrders;
     private DefaultListModel<String> listModel;
-    
+
     /**
      * Creates new form ViewOrderGui
      */
     public ViewAllOrdersGui() {
         initComponents();
-        
+
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 editOrderClicked();
             }
         });
-        
+
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 removeOrderClicked();
             }
         });
-        
+
         db = new Database();
         allOrders = db.retrieveAllOrders();
         listModel = new DefaultListModel<String>();
         jList1.setModel(listModel);
-        for(int i = 0; i < allOrders.size(); i++){
+        for (int i = 0; i < allOrders.size(); i++) {
             listModel.addElement(allOrders.get(i).toString());
         }
     }
-    
-    public void editOrderClicked(){
-        
+
+    public void editOrderClicked() {
+
     }
-    
-    public void removeOrderClicked(){
+
+    public void removeOrderClicked() {
         String toRemove = jList1.getSelectedValue();
         String[] array = toRemove.split(" ");
         db.removeOrderByID(Integer.parseInt(array[0]));
         listModel.removeAllElements();
         allOrders = db.retrieveAllOrders();
-        for(int i = 0; i < allOrders.size(); i++){
+        for (int i = 0; i < allOrders.size(); i++) {
             listModel.addElement(allOrders.get(i).toString());
         }
     }
@@ -178,11 +179,14 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
-       JList list = (JList)evt.getSource();
-       if (evt.getClickCount() == 2) {
-        int index = list.locationToIndex(evt.getPoint());
-        System.out.println("index: "+index);
-    }
+        JList list = (JList) evt.getSource();
+        if (evt.getClickCount() == 2) {
+            String toRemove = (String) list.getSelectedValue();
+            String[] array = toRemove.split(" ");
+            Order toView = db.retrieveOrdersByOrderID(Integer.parseInt(array[0]));
+            ViewOrderGui viewOrder = new ViewOrderGui(toView);
+            viewOrder.setVisible(true);
+        }
     }//GEN-LAST:event_jList1MouseClicked
 
 

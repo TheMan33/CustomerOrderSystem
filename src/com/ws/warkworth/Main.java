@@ -83,8 +83,7 @@ public class Main {
                         + "(orderID int,"
                         + "barcode VARCHAR (15),"
                         + "description VARCHAR (512),"
-                        + "quantity int,"
-                        + "PRIMARY KEY(orderID))");
+                        + "quantity int)");
                 int execute = ps.executeUpdate();
             }
         } catch (Exception e) {

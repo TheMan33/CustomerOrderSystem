@@ -5,6 +5,8 @@
  */
 package com.ws.warkworth;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -19,27 +21,47 @@ public class ViewOrderGui extends javax.swing.JFrame {
     public ViewOrderGui(Order toView) {
         initComponents();
         nameText.setText(toView.getName());
+        nameText.setEditable(false);
         phoneText.setText(toView.getNumber());
+        phoneText.setEditable(false);
         dateText.setText(toView.getDate());
+        dateText.setEditable(false);
         if(toView.isPaid()){
             paidText.setText("Yes");
         }else{
             paidText.setText("No");
         }
+        paidText.setEditable(false);
         if(toView.isOrdered()){
             orderedText.setText("Yes");
         }else{
             orderedText.setText("No");
         }
+        orderedText.setEditable(false);
         orderNoText.setText(toView.getOrderNo());
+        orderNoText.setEditable(false);
         staffText.setText(toView.getStaff());
+        staffText.setEditable(false);
         commentsText.setText(toView.getComments());
+        commentsText.setEditable(false);
         ArrayList<Item> allItems = toView.getOrderItems();
         String items = "";
         for(int i = 0; i < allItems.size(); i++){
             items += allItems.get(i).getBarcode() + " " + allItems.get(i).getDescription() + " x " + allItems.get(i).getQuantity() + "\n";
         }
         itemsText.setText(items);
+        itemsText.setEditable(false);
+        
+        closeButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeButtonClicked();
+            }
+        });
+    }
+    
+    public void closeButtonClicked(){
+        this.dispose();
     }
 
     /**
@@ -72,6 +94,7 @@ public class ViewOrderGui extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         itemsText = new javax.swing.JTextArea();
         printButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,6 +150,8 @@ public class ViewOrderGui extends javax.swing.JFrame {
             }
         });
 
+        closeButton.setText("Close");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,8 +204,10 @@ public class ViewOrderGui extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(157, 157, 157)
+                .addGap(82, 82, 82)
                 .addComponent(printButton)
+                .addGap(94, 94, 94)
+                .addComponent(closeButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -215,7 +242,9 @@ public class ViewOrderGui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(printButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(printButton)
+                    .addComponent(closeButton))
                 .addGap(5, 5, 5))
         );
 
@@ -236,6 +265,7 @@ public class ViewOrderGui extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
     private javax.swing.JTextArea commentsText;
     private javax.swing.JTextField dateText;
     private javax.swing.JTextArea itemsText;

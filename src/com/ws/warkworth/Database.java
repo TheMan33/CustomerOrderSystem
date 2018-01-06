@@ -273,7 +273,7 @@ public class Database {
             Class.forName(driver).newInstance();
             Connection con = DriverManager.getConnection(dbURL);
 
-            PreparedStatement st = con.prepareStatement("SELECT * FROM orders");
+            PreparedStatement st = con.prepareStatement("SELECT * FROM orders ORDER BY orderID");
             ResultSet rs = st.executeQuery();
 
             orders = new ArrayList<Order>();

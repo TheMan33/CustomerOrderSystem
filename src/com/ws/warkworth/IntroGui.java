@@ -34,6 +34,13 @@ public class IntroGui extends javax.swing.JPanel {
                 viewButtonClicked();
             }
         });
+        
+        closeButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeButtonClicked();
+            }
+        });
     }
 
     public void orderButtonClicked(){
@@ -52,6 +59,10 @@ public class IntroGui extends javax.swing.JPanel {
         frame.pack();
     }
     
+    public void closeButtonClicked(){
+        System.exit(0);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +76,7 @@ public class IntroGui extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         viewButton = new javax.swing.JButton();
         orderButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         jLabel1.setText("Welcome to the Swiggety Swagetty");
@@ -80,6 +92,8 @@ public class IntroGui extends javax.swing.JPanel {
         });
 
         orderButton.setText("New Order");
+
+        closeButton.setText("Close");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -97,7 +111,10 @@ public class IntroGui extends javax.swing.JPanel {
                                 .addComponent(orderButton))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(160, 160, 160)
+                        .addComponent(closeButton)))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -111,7 +128,9 @@ public class IntroGui extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(viewButton)
                     .addComponent(orderButton))
-                .addGap(87, 87, 87))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(closeButton)
+                .addGap(53, 53, 53))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -121,6 +140,7 @@ public class IntroGui extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton orderButton;

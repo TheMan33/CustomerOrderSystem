@@ -40,7 +40,7 @@ public class Database {
             Connection con = DriverManager.getConnection(dbURL);
 
             PreparedStatement st = con.prepareStatement("INSERT INTO orders(name, number, paid, ordered, orderNo, staff, comments, date) values(?, ?, ?, ?, ?, ?, ?, ?)");
-            st.setString(1, order.getName());
+            st.setString(1, order.getName().toUpperCase());
             st.setString(2, order.getNumber());
             st.setBoolean(3, order.isPaid());
             st.setBoolean(4, order.isOrdered());
@@ -103,6 +103,47 @@ public class Database {
 
             PreparedStatement st = con.prepareStatement("SELECT * FROM orders WHERE date = ?");
             st.setString(1, date);
+
+            ResultSet rs = st.executeQuery();
+
+            orders = new ArrayList<Order>();
+
+            while (rs.next()) {
+                Order order = new Order(rs.getString("name"), rs.getString("number"), rs.getBoolean("paid"), rs.getBoolean("ordered"), rs.getString("orderNo"), rs.getString("staff"), rs.getString("comments"), new ArrayList<Item>(), rs.getString("date"), rs.getInt("orderID"));
+                orders.add(order);
+            }
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+    
+    public ArrayList<Order> retrieveOrdersByName(String name){
+        ArrayList<Order> orders = null;
+        String dbName = "OrderDB";
+        String dbUser = "ws";
+        String dbPass = "stationery";
+
+        String dbURL = "jdbc:derby://localhost:1527/" + dbName + ";"
+                + "create=true;"
+                + "user=" + dbUser + ";"
+                + "password=" + dbPass;
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";
+
+        try {
+            Class.forName(driver).newInstance();
+            Connection con = DriverManager.getConnection(dbURL);
+
+            PreparedStatement st = con.prepareStatement("SELECT * FROM orders WHERE name = ?");
+            st.setString(1, name.toUpperCase());
 
             ResultSet rs = st.executeQuery();
 

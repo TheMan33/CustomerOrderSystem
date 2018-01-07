@@ -34,7 +34,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return barcode + " x" + quantity;
+        return barcode + " " + description + " x" + quantity;
     }
     
     

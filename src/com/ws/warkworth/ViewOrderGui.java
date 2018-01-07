@@ -5,16 +5,27 @@
  */
 package com.ws.warkworth;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import javax.swing.JScrollPane;
 
 /**
  *
  * @author wsl
  */
-public class ViewOrderGui extends javax.swing.JFrame {
+public class ViewOrderGui extends javax.swing.JFrame implements Printable {
 
+    private ArrayList<Item> allItems;
+    
     /**
      * Creates new form ViewOrderGui
      */
@@ -26,15 +37,15 @@ public class ViewOrderGui extends javax.swing.JFrame {
         phoneText.setEditable(false);
         dateText.setText(toView.getDate());
         dateText.setEditable(false);
-        if(toView.isPaid()){
+        if (toView.isPaid()) {
             paidText.setText("Yes");
-        }else{
+        } else {
             paidText.setText("No");
         }
         paidText.setEditable(false);
-        if(toView.isOrdered()){
+        if (toView.isOrdered()) {
             orderedText.setText("Yes");
-        }else{
+        } else {
             orderedText.setText("No");
         }
         orderedText.setEditable(false);
@@ -42,26 +53,73 @@ public class ViewOrderGui extends javax.swing.JFrame {
         orderNoText.setEditable(false);
         staffText.setText(toView.getStaff());
         staffText.setEditable(false);
+        commentsText.setWrapStyleWord(true);
+        commentsText.setLineWrap(true);
+        jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         commentsText.setText(toView.getComments());
         commentsText.setEditable(false);
-        ArrayList<Item> allItems = toView.getOrderItems();
+        allItems = toView.getOrderItems();
         String items = "";
-        for(int i = 0; i < allItems.size(); i++){
+        for (int i = 0; i < allItems.size(); i++) {
             items += allItems.get(i).getBarcode() + " " + allItems.get(i).getDescription() + " x " + allItems.get(i).getQuantity() + "\n";
         }
         itemsText.setText(items);
         itemsText.setEditable(false);
-        
-        closeButton.addActionListener(new ActionListener(){
+
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                printButtonClicked();
+            }
+        });
+
+        closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 closeButtonClicked();
             }
         });
     }
-    
-    public void closeButtonClicked(){
+
+    public void closeButtonClicked() {
         this.dispose();
+    }
+
+    public void printButtonClicked() {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(this);
+        if (job.printDialog()) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+                System.err.println("Could not print!");
+            }
+        }
+    }
+
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+        if (pageIndex > 0) {
+            return NO_SUCH_PAGE;
+        }
+        Graphics2D g2d = (Graphics2D) graphics;
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        
+        graphics.drawString("Date: " + dateText.getText(), 100, 100);
+        graphics.drawString("Customer Name: " + nameText.getText().toUpperCase() + "          Phone: " + phoneText.getText(), 100, 125);
+        graphics.drawString("Paid: " + paidText.getText() + "          Ordered: " + orderedText.getText() + "          OrderNo: " + orderNoText.getText(), 100, 150);
+        graphics.drawString("Staff Member: " + staffText.getText(), 100, 175);
+        graphics.drawString("Comments: " + commentsText.getText(), 100, 200);
+        graphics.drawString("Order Items: ", 100, 300);
+        int yPos = 300;
+        for(int i = 0; i < allItems.size(); i++){
+            yPos+=25;
+            graphics.drawString(allItems.get(i).getBarcode() + " " + allItems.get(i).getDescription() + " x " + allItems.get(i).getQuantity(), 100, yPos);
+        }
+        
+//        this.printAll(graphics);
+        return PAGE_EXISTS;
     }
 
     /**
@@ -159,7 +217,7 @@ public class ViewOrderGui extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -197,10 +255,11 @@ public class ViewOrderGui extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(orderNoText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(7, 7, 7))
                     .addComponent(jLabel9))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -262,7 +321,6 @@ public class ViewOrderGui extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;

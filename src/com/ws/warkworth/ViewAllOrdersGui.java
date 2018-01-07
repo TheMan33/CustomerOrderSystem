@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -63,6 +64,13 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
             }
         });
 
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeButtonClicked();
+            }
+        });
+
         db = new Database();
         allOrders = db.retrieveAllOrders();
         listModel = new DefaultListModel<String>();
@@ -73,7 +81,16 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     }
 
     public void refineButtonClicked() {
-        if (!barcodeText.getText().equals("")) {
+        if (!nameText.getText().equals("")) {
+            ArrayList<Order> matchingOrders = db.retrieveOrdersByName(nameText.getText());
+            listModel = new DefaultListModel<String>();
+            jList1.setModel(listModel);
+            if (matchingOrders.size() > 0) {
+                for (int i = 0; i < matchingOrders.size(); i++) {
+                    listModel.addElement(matchingOrders.get(i).toString());
+                }
+            }
+        } else if (!barcodeText.getText().equals("")) {
             ArrayList<Order> matchingOrders = db.retrieveOrdersByBarcode(barcodeText.getText());
             listModel = new DefaultListModel<String>();
             jList1.setModel(listModel);
@@ -93,8 +110,11 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
             }
         }
     }
-    
-    public void resetButtonClicked(){
+
+    public void resetButtonClicked() {
+        nameText.setText("");
+        barcodeText.setText("");
+        dateText.setText("");
         listModel = new DefaultListModel<String>();
         jList1.setModel(listModel);
         for (int i = 0; i < allOrders.size(); i++) {
@@ -112,13 +132,26 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     }
 
     public void removeOrderClicked() {
-        String toRemove = jList1.getSelectedValue();
-        String[] array = toRemove.split(" ");
-        db.removeOrderByID(Integer.parseInt(array[0]));
-        listModel.removeAllElements();
-        allOrders = db.retrieveAllOrders();
-        for (int i = 0; i < allOrders.size(); i++) {
-            listModel.addElement(allOrders.get(i).toString());
+        int warning = JOptionPane.showOptionDialog(this,
+                "The selected order(s) will be deleted. Continue?",
+                "Warning",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                null,
+                null);
+        if (warning == JOptionPane.OK_OPTION) {
+            ArrayList<String> toRemove = (ArrayList<String>) jList1.getSelectedValuesList();
+            for (int i = 0; i < toRemove.size(); i++) {
+                String[] array = toRemove.get(i).split(" ");
+                db.removeOrderByID(Integer.parseInt(array[0]));
+            }
+
+            listModel.removeAllElements();
+            allOrders = db.retrieveAllOrders();
+            for (int i = 0; i < allOrders.size(); i++) {
+                listModel.addElement(allOrders.get(i).toString());
+            }
         }
     }
 
@@ -130,6 +163,10 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
         frame.pack();
     }
 
+    public void closeButtonClicked() {
+        System.exit(0);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -139,7 +176,7 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        nameText = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         barcodeText = new javax.swing.JTextField();
@@ -152,6 +189,7 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
         dateText = new javax.swing.JTextField();
         backButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         jLabel1.setText("Customer Name:");
 
@@ -187,6 +225,8 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
 
         resetButton.setText("Reset");
 
+        closeButton.setText("Close");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -195,11 +235,13 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(backButton)
+                        .addGap(47, 47, 47)
                         .addComponent(viewButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(removeButton)
-                        .addGap(94, 94, 94)
-                        .addComponent(backButton))
+                        .addGap(47, 47, 47)
+                        .addComponent(closeButton))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -210,7 +252,7 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -229,7 +271,7 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(barcodeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -244,7 +286,8 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(viewButton)
                     .addComponent(removeButton)
-                    .addComponent(backButton))
+                    .addComponent(backButton)
+                    .addComponent(closeButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -269,13 +312,14 @@ public class ViewAllOrdersGui extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JTextField barcodeText;
+    private javax.swing.JButton closeButton;
     private javax.swing.JTextField dateText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField nameText;
     private javax.swing.JButton refineButton;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton resetButton;

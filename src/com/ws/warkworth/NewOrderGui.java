@@ -95,11 +95,27 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
             }
 
         });
+        
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                printButtonClicked();
+            }
+
+        });
 
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 backButtonClicked();
+            }
+
+        });
+        
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeButtonClicked();
             }
 
         });
@@ -152,18 +168,21 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
             JOptionPane.showMessageDialog(frame, "Please enter the customer's phone number!");
         } else {
             Order order = new Order(nameText.getText(), numberText.getText(), paid, ordered, orderNumberText.getText(), teamMemberText.getText(), commentsText.getText(), items, dateLabel.getText());
-            db.addOrder(order);
+            if (db.addOrder(order)) {
+                submitButton.setEnabled(false);
+            }
+        }
+    }
 
-//        PrinterJob job = PrinterJob.getPrinterJob();
-//        job.setPrintable(this);
-//        if(job.printDialog()){
-//            try {
-//                job.print();
-//                submitButton.setEnabled(false);
-//            } catch (PrinterException ex) {
-//                System.err.println("Could not print!");
-//            }
-//        }
+    public void printButtonClicked() {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(this);
+        if (job.printDialog()) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+                System.err.println("Could not print!");
+            }
         }
     }
 
@@ -174,15 +193,43 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         frame.repaint();
         frame.pack();
     }
+    
+    public void closeButtonClicked() {
+        System.exit(0);
+    }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         if (pageIndex > 0) {
             return NO_SUCH_PAGE;
         }
+        String paidText;
+        String orderedText;
+        if(paid){
+            paidText = "Yes";
+        } else{
+            paidText = "No";
+        }
+        
+        if(ordered){
+            orderedText = "Yes";
+        } else{
+            orderedText = "No";
+        }
+        
         Graphics2D g2d = (Graphics2D) graphics;
         g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        graphics.drawString("Customer Name: " + nameText.getText(), 100, 100);
+        graphics.drawString("Date: " + dateLabel.getText(), 100, 100);
+        graphics.drawString("Customer Name: " + nameText.getText().toUpperCase() + "          Phone: " + numberText.getText(), 100, 125);
+        graphics.drawString("Paid: " + paidText + "          Ordered: " + orderedText + "          OrderNo: " + orderNumberText.getText(), 100, 150);
+        graphics.drawString("Staff Member: " + teamMemberText.getText(), 100, 175);
+        graphics.drawString("Comments: " + commentsText.getText(), 100, 200);
+        graphics.drawString("Order Items: ", 100, 300);
+        int yPos = 300;
+        for(int i = 0; i < listModel.size(); i++){
+            yPos+=25;
+            graphics.drawString(listModel.elementAt(i), 100, yPos);
+        }
         return PAGE_EXISTS;
     }
 
@@ -234,6 +281,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         submitButton = new javax.swing.JButton();
         printButton = new javax.swing.JButton();
         backButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -403,15 +451,26 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
 
         backButton.setText("Back");
 
+        closeButton.setText("Close");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(submitButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(printButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(backButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeButton))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -437,18 +496,12 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
                                         .addComponent(orderedNoCheckbox)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(4, 4, 4))
-                    .addComponent(jLabel14))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel13)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(submitButton)
-                .addGap(18, 18, 18)
-                .addComponent(printButton)
-                .addGap(18, 18, 18)
-                .addComponent(backButton)
-                .addGap(91, 91, 91))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -483,8 +536,9 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitButton)
                     .addComponent(printButton)
-                    .addComponent(backButton))
-                .addContainerGap(39, Short.MAX_VALUE))
+                    .addComponent(backButton)
+                    .addComponent(closeButton))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Order Details", jPanel2);
@@ -512,6 +566,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
     private javax.swing.JButton addItemButton;
     private javax.swing.JButton backButton;
     private javax.swing.JTextField barcodeText;
+    private javax.swing.JButton closeButton;
     private javax.swing.JTextArea commentsText;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JList<String> itemList;

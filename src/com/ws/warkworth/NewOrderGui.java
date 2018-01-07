@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -32,105 +33,127 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
     private boolean paid;
     private boolean ordered;
     private Database db;
-    
+    private JFrame frame;
+
     /**
      * Creates new form test
      */
-    public NewOrderGui() {
+    public NewOrderGui(JFrame frame) {
         this.setSize(350, 400);
         initComponents();
         db = new Database();
-        
+        this.frame = frame;
         dateLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-u")));
-        
+
         items = new ArrayList<Item>();
         listModel = new DefaultListModel<String>();
         itemList.setModel(listModel);
         paidNoCheckbox.setSelected(true);
         orderedNoCheckbox.setSelected(true);
         orderNumberText.setEnabled(false);
-        
+
         addItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addItemClicked();
             }
         });
-        paidYesCheckbox.addActionListener(new ActionListener(){
+        paidYesCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 paidYesClicked();
             }
-        
+
         });
-        paidNoCheckbox.addActionListener(new ActionListener(){
+        paidNoCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 paidNoClicked();
             }
-        
+
         });
-        
-        orderedYesCheckbox.addActionListener(new ActionListener(){
+
+        orderedYesCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 orderedYesClicked();
             }
-        
+
         });
-        orderedNoCheckbox.addActionListener(new ActionListener(){
+        orderedNoCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 orderedNoClicked();
             }
-        
+
         });
-        
-        submitButton.addActionListener(new ActionListener(){
+
+        submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 submitButtonClicked();
             }
-            
+
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                backButtonClicked();
+            }
+
         });
     }
-    
-    public void addItemClicked(){
-        Item toAdd = new Item(itemText.getText(), barcodeText.getText(), Integer.parseInt(quantity.getText()));
-        itemText.setText("");
-        barcodeText.setText("");
-        quantity.setText("");
-        items.add(toAdd);
-        listModel.addElement(toAdd.toString());
+
+    public void addItemClicked() {
+        if (itemText.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Please enter a description!");
+        } else if (barcodeText.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Please enter a barcode!");
+        } else if (quantity.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Please enter a quantity!");
+        } else {
+            Item toAdd = new Item(itemText.getText(), barcodeText.getText(), Integer.parseInt(quantity.getText()));
+            itemText.setText("");
+            barcodeText.setText("");
+            quantity.setText("");
+            items.add(toAdd);
+            listModel.addElement(toAdd.toString());
+        }
     }
-    
-    public void paidYesClicked(){
+
+    public void paidYesClicked() {
         paid = true;
         paidNoCheckbox.setSelected(false);
     }
-    
-    public void paidNoClicked(){
+
+    public void paidNoClicked() {
         paid = false;
         paidYesCheckbox.setSelected(false);
     }
-    
-    public void orderedYesClicked(){
+
+    public void orderedYesClicked() {
         ordered = true;
         orderedNoCheckbox.setSelected(false);
         orderNumberText.setEnabled(true);
     }
-    
-    public void orderedNoClicked(){
+
+    public void orderedNoClicked() {
         ordered = false;
         orderedYesCheckbox.setSelected(false);
         orderNumberText.setText("");
         orderNumberText.setEnabled(false);
     }
 
-    public void submitButtonClicked(){
-        Order order = new Order(nameText.getText(), numberText.getText(), paid, ordered, orderNumberText.getText(), teamMemberText.getText(), commentsText.getText(), items, dateLabel.getText());
-        db.addOrder(order);
-        
+    public void submitButtonClicked() {
+        if (nameText.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Please enter the customer's name!!");
+        } else if (numberText.getText().equals("")) {
+            JOptionPane.showMessageDialog(frame, "Please enter the customer's phone number!");
+        } else {
+            Order order = new Order(nameText.getText(), numberText.getText(), paid, ordered, orderNumberText.getText(), teamMemberText.getText(), commentsText.getText(), items, dateLabel.getText());
+            db.addOrder(order);
+
 //        PrinterJob job = PrinterJob.getPrinterJob();
 //        job.setPrintable(this);
 //        if(job.printDialog()){
@@ -141,16 +164,25 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
 //                System.err.println("Could not print!");
 //            }
 //        }
+        }
     }
-    
+
+    public void backButtonClicked() {
+        frame.remove(this);
+        frame.add(new IntroGui(frame));
+        frame.revalidate();
+        frame.repaint();
+        frame.pack();
+    }
+
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if(pageIndex > 0){
+        if (pageIndex > 0) {
             return NO_SUCH_PAGE;
         }
         Graphics2D g2d = (Graphics2D) graphics;
         g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        graphics.drawString("Customer Name: "+nameText.getText(), 100, 100);
+        graphics.drawString("Customer Name: " + nameText.getText(), 100, 100);
         return PAGE_EXISTS;
     }
 
@@ -201,6 +233,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
         commentsText = new javax.swing.JTextArea();
         submitButton = new javax.swing.JButton();
         printButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -368,6 +401,8 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
 
         printButton.setText("Print");
 
+        backButton.setText("Back");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -375,7 +410,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -406,12 +441,14 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel13)
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(122, 122, 122)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(submitButton)
                 .addGap(18, 18, 18)
                 .addComponent(printButton)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(backButton)
+                .addGap(91, 91, 91))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,7 +482,8 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitButton)
-                    .addComponent(printButton))
+                    .addComponent(printButton)
+                    .addComponent(backButton))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -472,6 +510,7 @@ public class NewOrderGui extends javax.swing.JPanel implements Printable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemButton;
+    private javax.swing.JButton backButton;
     private javax.swing.JTextField barcodeText;
     private javax.swing.JTextArea commentsText;
     private javax.swing.JLabel dateLabel;

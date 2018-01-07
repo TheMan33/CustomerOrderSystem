@@ -107,7 +107,7 @@ public class Order {
             orderedString = "No";
         }
         
-        return orderID + " " + date + " " + name + " " + number + " Paid: " + paidString + " Ordered: " + orderedString + " " + orderNo;
+        return orderID + "   " + date + "   " + name + "   " + number + "   Paid: " + paidString + "   Ordered: " + orderedString + "   " + orderNo;
     }
     
     

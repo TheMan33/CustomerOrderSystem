@@ -1,7 +1,7 @@
-Thu Jan 04 10:50:15 NZDT 2018 : Apache Derby Network Server - 10.11.1.2 - (1629631) started and ready to accept connections on port 1527
+Sat Jan 06 22:50:45 NZDT 2018 : Apache Derby Network Server - 10.11.1.2 - (1629631) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Thu Jan 04 10:50:16 NZDT 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0160-be00-dcf4-0000031c8fb8 
+Sat Jan 06 22:50:45 NZDT 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0160-cae1-372a-0000031c9038 
 on database directory C:\Users\wsl\Documents\NetBeansProjects\CustomerOrderSystem\OrderDB with class loader sun.misc.Launcher$AppClassLoader@5e2de80c 
 Loaded from file:/C:/Program%20Files/Java/jdk1.8.0_152/db/lib/derby.jar
 java.vendor=Oracle Corporation
